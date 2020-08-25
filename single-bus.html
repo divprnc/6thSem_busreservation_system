@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.11.0/firebase-firestore.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Title -->
+    <title>Premimum Buses</title>
+
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="./mainjs/setbusdata.js"></script>
+    <link rel="stylesheet" href="./bootstrap.css">
+    <link rel="stylesheet" href="./tachyons.css">
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader"></div>
+    </div>
+    <div id="whole-body">
+        <header class="header-area">
+            <!-- Search Form -->
+            <div class="search-form d-flex align-items-center">
+                <div class="container">
+                    <form action="index.html" method="get">
+                        <input type="search" name="search-form-input" id="searchFormInput"
+                            placeholder="Type your keyword ...">
+                        <button type="submit"><i class="icon_search"></i></button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Top Header Area Start -->
+            <div class="top-header-area">
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-6">
+                            <div class="top-header-content">
+                                <a href="#"><i class="icon_phone"></i> <span>(+91) 8709960796</span></a>
+                                <a href="#"><i class="icon_mail"></i> <span>divprnc@gmail.com</span></a>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="top-header-content">
+                                <!-- Top Social Area -->
+                                <div class="top-social-area ml-auto">
+                                    <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                    <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                                    <a href="#"><i class="fa fa-tripadvisor" aria-hidden="true"></i></a>
+                                    <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Top Header Area End -->
+
+            <!-- Main Header Start -->
+            <div class="main-header-area">
+                <div class="classy-nav-container breakpoint-off">
+                    <div class="container">
+                        <!-- Classy Menu -->
+                        <nav class="classy-navbar justify-content-between" id="robertoNav">
+
+                         
+                            <div class="classy-navbar-toggler">
+                                <span class="navbarToggler"><span></span><span></span><span></span></span>
+                            </div>
+
+                            <!-- Menu -->
+                            <div class="classy-menu">
+                                <!-- Menu Close Button -->
+                                <div class="classycloseIcon">
+                                    <div class="cross-wrap"><span class="top"></span><span class="bottom"></span></div>
+                                </div>
+                                <!-- Nav Start -->
+                                <div class="classynav">
+                                    <ul id="nav">
+                                        <li class="active"><a href="./index.html">Home</a></li>
+                                        <li><a href="./buses.html">Buses</a></li>
+                                        <li><a href="./about.html">About Us</a></li>
+                                      
+                                        <li><a href="./contact.html">Contact Us</a></li>
+                                    </ul>
+
+
+                                    
+                                    <div class="book-now-btn ml-3 ml-lg-5">
+                                        <a href="javascript:logOut()"><i class="fa fa-long-arrow-left"
+                                                aria-hidden="true"></i>&nbsp;&nbsp; LogOut</a>
+                                    </div>
+                                    
+                                </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </header>
+     
+        <div class="roberto-rooms-area section-padding-100-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 col-lg-8">
+                        <!-- Single Room Details Area -->
+                        <div class="single-room-details-area mb-50">
+                            <!-- Room Thumbnail Slides -->
+                            <div class="room-thumbnail-slides mb-50">
+                                <div id="room-thumbnail--slide" data-ride="carousel">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active" id="set-image">
+                                            </div>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div id="bus-details">
+
+                            </div>
+                            <h4>Select Your Seat</h4>
+                            <!-- Seats Selector -->
+                            <div class="row flex flex-row justify-center items-center">
+                                <div class="col-11">
+                                    <form id="form1" method="post"></form>
+                                    <div id="loader"
+                                        class="row flex-row flex justify-center mt3 mb4 py-2 f7 items-center vh-75 overflow-auto border-dark ba b--washed-green">
+
+                                    </div>
+                                    <script>
+                                        var html = ''
+                                        var allseat = []
+                                        busid = urlParams.get('id');
+                                        let allS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33]
+                                        var emp = db.collection('BookedTicketData').where("BusId", "==", busid).get().then((snapshot) => {
+                                            snapshot.docs.forEach((doc) => {
+                                                data = doc.data();
+                                                bseat = data.AllSeat
+                                                // console.log(bseat)  //(2) [33, 34]
+                                                allseat = allseat.concat(bseat)
+                                            })
+                                            // console.log(allseat)
+                                            return allseat;
+                                        }).then((booked) => {
+                                            allS.filter(n => {
+                                                // console.log(s)
+                                                if (n !== 33) {
+                                                    if (n % 2 != 0 && n != 1) {
+                                                        html += `&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`
+                                                    }
+                                                    if (booked.includes(n)) {
+                                                        // console.log("n -> " + n)
+                                                        // console.log("s -> " + booked) // s -> 33,34
+                                                        html += `<input type="checkbox" class="dn checkme" name="s-size" id="${n}" value="${n}" disabled/>
+                     <label for="${n}" class="col-2 br-pill f7 m-1 btn text-white bg-danger border-danger grow" data-toggle="tooltip" title="Seat Already Booked" disabled>${n}</label>
+        
+                     `
+                                                    }
+                                                    else {
+                                                        html += ` <input type="checkbox" class="dn checkme" name="s-size" id="${n}"  value="${n}"/>
+                     <label for="${n}" class="col-2 br-pill f7 m-1 btn text-dark bg-white border-dark           grow">${n}</label>
+        
+                   `
+                                                    }
+                                                }
+                                            });
+
+                                            document.getElementById('loader').innerHTML = html;
+
+                                            //Note: Add change events after setting the html into the DOM.
+
+                                            $('input[type=checkbox]').on('change', function () {
+                                                console.log($(this).attr("id"));
+                                                let id = $(this).attr("id");
+                                                let checkbox = document.getElementById(id);
+                                                // console.log("C->" + id)
+                                                let checkbox_label = $(`[for=${id}]`);
+                                                // console.log("CL->" + checkbox_label)
+
+                                                if (checkbox_label.hasClass('bg-dark')) {
+                                                    // console.log('Hii')
+                                                    checkbox_label.removeClass('text-white')
+                                                    checkbox_label.addClass('text-dark')
+                                                    checkbox_label.removeClass('bg-dark')
+                                                    checkbox_label.addClass('bg-white')
+                                                } else {
+                                                    // console.log('Bye')
+                                                    checkbox_label.removeClass('text-dark')
+
+
+                                                    checkbox_label.addClass('text-white')
+                                                    checkbox_label.removeClass('bg-white')
+                                                    checkbox_label.addClass('bg-dark')
+                                                }
+                                            });
+
+                                        });
+
+                                    </script>
+
+
+
+                                    <div class="form-group">
+                                        <button aria-expanded="false" data-toggle="collapse" data-target="#demo"
+                                            style="background-color: teal; color: white;" onclick="validate(33)"
+                                            class="btn roberto-btn w-100">Enter Traveller
+                                            Details</button>
+                                        <div id="demo" class="collapse">
+
+                                            <div id="displayer"
+                                                class="row flex-row flex justify-center mt3 mb4 py-2 f7 items-center vh-50 overflow-auto border-dark ba b--red">
+                                                <div class="card card-body " id="cust-data">
+
+                                                    <!-- Customer Data -->
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    
+
+                                    </form>
+
+                                </div>
+                            </div>
+
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+            </div>
+            <!-- Rooms Area End -->
+            <section class="roberto-testimonials-area section-padding-100-0">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6">
+                    <div class="testimonial-thumbnail owl-carousel mb-100">
+                        <img src="img/bg-img/10.jpg" alt="">
+                        <img src="img/bg-img/11.jpg" alt="">
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <!-- Section Heading -->
+                    <div class="section-heading">
+                        <h6>Visitors Testimonials</h6>
+                        <h2>Our Visitors Rating and Comments</h2>
+                    </div>
+                    <!-- Testimonial Slide -->
+                    <div class="testimonial-slides owl-carousel mb-100">
+
+                        <!-- Single Testimonial Slide -->
+                        <div class="single-testimonial-slide">
+                            <h5>“This can be achieved by applying search engine optimization or popularly known as SEO.
+                                This is a marketing strategy which increases the quality and quantity of traffic flow to
+                                a particular website via search engines.”</h5>
+                            <div class="rating-title">
+                                <div class="rating">
+                                    <i class="icon_star"></i>
+                                    <i class="icon_star"></i>
+                                    <i class="icon_star"></i>
+                                    <i class="icon_star"></i>
+                                    <i class="icon_star"></i>
+                                </div>
+                                <h6>Robert Downey <span>- CEO Deercreative</span></h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+            <!-- Call To Action Area Start -->
+            <section class="roberto-cta-area">
+                <div class="container">
+                    <div class="cta-content bg-img bg-overlay jarallax"
+                        style="background-image: url(img/bg-img/1.jpg);">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-md-7">
+                                <div class="cta-text mb-50">
+                                    <h2>Contact us now!</h2>
+                                    <h6>Contact (+91) 8709960796</h6>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-5 text-right">
+                                <a href="#" class="btn roberto-btn mb-50">Contact Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Call To Action Area End -->
+
+            <div style="padding-top: 50px;"></div>
+
+            <!-- Footer Area Start -->
+            <footer class="footer-area section-padding-80-0">
+                <!-- Main Footer Area -->
+                <div class="main-footer-area">
+            <div class="container">
+                <div class="row align-items-baseline justify-content-between">
+                    <!-- Single Footer Widget Area -->
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="single-footer-widget mb-80">
+                            
+                            <h4>+91 8709960796</h4>
+                            <span>divprn@gmail.com</span>
+                            <span>Dr Ait Banglore</span>
+                        </div>
+                    </div>
+
+                
+
+                    <!-- Single Footer Widget Area -->
+                    <div class="col-12 col-sm-4 col-lg-2">
+                        <div class="single-footer-widget mb-80">
+                            <!-- Widget Title -->
+                            <h5 class="widget-title">Links</h5>
+
+                            <!-- Footer Nav -->
+                            <ul class="footer-nav">
+                                <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> About Us</a></li>
+                                <li><a href="buses.html"><i class="fa fa-caret-right" aria-hidden="true"></i> Buses</a></li>
+                                <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Career</a></li>
+                                <li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> FAQs</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Single Footer Widget Area -->
+                    <div class="col-12 col-sm-8 col-lg-4">
+                        <div class="single-footer-widget mb-80">
+                            <!-- Widget Title -->
+                            <h5 class="widget-title">Subscribe Newsletter</h5>
+                            <span>Subscribe our newsletter gor get notification about new updates.</span>
+
+                            <!-- Newsletter Form -->
+                            <form action="index.html" class="nl-form">
+                                <input type="email" class="form-control" placeholder="Enter your email...">
+                                <button type="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                <!-- Copywrite Area -->
+                <div class="container">
+            <div class="copywrite-content">
+                <div class="row align-items-center">
+                    <div class="col-12 col-md-8">
+                        <!-- Copywrite Text -->
+                        <div class="copywrite-text">
+                            <p>
+                                Copyright &copy;All rights reserved | Premium Bus Reservation <i class="fa fa-heart-o"
+                                    aria-hidden="true"></i>
+                               </p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+            </footer>
+        </div>
+        <!-- Footer Area End -->
+
+
+        <!-- **** All JS Files ***** -->
+        <!-- jQuery 2.2.4 -->
+        <script src="js/jquery.min.js"></script>
+        <!-- Popper -->
+        <script src="js/popper.min.js"></script>
+        <!-- Bootstrap -->
+        <script src="js/bootstrap.min.js"></script>
+        <!-- All Plugins -->
+        <script src="js/roberto.bundle.js"></script>
+        <!-- Active -->
+        <script src="js/default-assets/active.js"></script>
+        <script>
+            // Checking user is currently logged in or not
+            firebase.auth().onAuthStateChanged((user) => {
+
+                if (!user) {
+                    window.location.href = "login.html";
+
+                }
+            });
+        </script>
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+</body>
+
+</html>
